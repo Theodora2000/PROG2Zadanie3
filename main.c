@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <string.h>
 char *readline() {
     const size_t BSIZE = 100;
     char *line = NULL;
@@ -42,7 +42,7 @@ void RemoveNonLetters(char* line)
     {
         if(!isalpha(line[i]))
         {
-            line[i]=" ";
+            line[i]=' ';
             i++;
         }
         else{
@@ -64,11 +64,22 @@ void CompresionText(char *line,char* newLine)
         {
             newLine[j]=line[i];
             j++;
+            i++;
+        }else{
+            i++;
+            continue;
         }
 
-        i++;
+
     }
     newLine[j]='\0';
+    int k;
+    for( k=0; k< newLine[k]!='\0'; k++)
+    {
+        line[k]=newLine[k];
+    }
+    line[k]='\0';
+
 }
 
 void LowerToUpper(char *line){
@@ -80,7 +91,7 @@ void LowerToUpper(char *line){
             line[i] = toupper(line[i]);
             i++;
         } else {
-
+            i++;
             continue;
         }
     }
@@ -95,13 +106,37 @@ void UpperToLower(char *line){
             line[i] = tolower(line[i]);
             i++;
         } else {
-
+            i++;
             continue;
         }
     }
 
 }
 
+void findSubStringMutli(char line[],char substring[], )
+
+void findSubString(char line[],char substring[], char* param)
+{
+
+    while(1>0)
+    {
+        char* start=strstr(line,substring);
+        if(start==NULL)
+        {
+            return;
+        }
+        int i=0;
+        int size=strlen(substring);
+        while(i<size)
+        {
+            start[i]='*';
+            i++;
+
+        }
+    }
+}
+
+/*
 void ParamR(char *line, char *rvalue, int optind, int argc, char * argv){
     if(optind < argc){
         for(int i=optind;i<argc;i++){
@@ -139,33 +174,50 @@ void NonR(char *line,int optind, int argc, char * argv){
     }
 
 }
-
+*/
 int main(int argc, char * argv[]) {
 
     int opt;
     char* optstring = ":aculr:";
     char *rvalue = NULL;
 
+    char *line = NULL;
+    char newLine[10000];
 
+    int biloU=0;
+
+    line = readline();
     while ((opt = getopt(argc, argv, optstring)) != -1) {
+
         switch (opt) {
             case 'a':
-
-                printf("Prepinac -a\n");
+                //printf("Prepinac -a\n");
+                RemoveNonLetters(line);
                 break;
             case 'r':
-                rvalue=optarg;
+                optarg=rvalue;
+                //printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
+                if(optind < argc){
+                    for(int i=optind;i<argc;i++){
+                        findSubString(line,argv[i], optarg );
+                    }
 
-                printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
+                }
                 break;
             case 'c':
-                printf("Prepinac -c\n");
+                //printf("Prepinac -c\n");
+
+                CompresionText(line, newLine);
                 break;
             case 'u':
-                printf("Prepinac -u\n");
+                if(biloL==1)
+                biloU=1;
+                //printf("Prepinac -u\n");
+                LowerToUpper(line);
                 break;
             case 'l':
-                printf("Prepinac -l\n");
+                //printf("Prepinac -l\n");
+                UpperToLower(line);
                 break;
 
             case '?':
@@ -183,7 +235,11 @@ int main(int argc, char * argv[]) {
         for(int i=optind;i<argc;i++){
             printf("Non-option CMD argument: %s\n",argv[i]);
         }
+
     }
+
+    printf("%s", line);
+    free(line);
 /*
     char *line = NULL;
 
