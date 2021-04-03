@@ -187,6 +187,8 @@ int main(int argc, char * argv[]) {
     int boloU=0;
     int boloL=0;
 
+
+
     line = readline();
     int p = 0;
     if(line[p]=='\n'){
@@ -248,8 +250,7 @@ int main(int argc, char * argv[]) {
 
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-
-            findSubString(line,argv[i], optarg );
+            //findSubString(line,argv[i], optarg );
         }
 
     }
