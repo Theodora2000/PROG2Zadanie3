@@ -113,7 +113,7 @@ void UpperToLower(char *line){
 
 }
 
-void findSubStringMutli(char line[],char substring[], )
+//void findSubStringMutli(char line[],char substring[], )
 
 void findSubString(char line[],char substring[], char* param)
 {
@@ -178,15 +178,22 @@ void NonR(char *line,int optind, int argc, char * argv){
 int main(int argc, char * argv[]) {
 
     int opt;
-    char* optstring = ":aculr:";
+    char* optstring = "aculr:";
     char *rvalue = NULL;
 
     char *line = NULL;
     char newLine[10000];
 
-    int biloU=0;
+    int boloU=0;
+    int boloL=0;
 
     line = readline();
+    int p = 0;
+    if(line[p]=='\n'){
+        printf("Zadal iba novy riadok");
+        return 0;
+    }
+
     while ((opt = getopt(argc, argv, optstring)) != -1) {
 
         switch (opt) {
@@ -210,12 +217,18 @@ int main(int argc, char * argv[]) {
                 CompresionText(line, newLine);
                 break;
             case 'u':
-                if(biloL==1)
-                biloU=1;
+                boloU=1;
+                if(boloL==1){
+                    return 3;
+                }
                 //printf("Prepinac -u\n");
                 LowerToUpper(line);
                 break;
             case 'l':
+                boloL=1;
+                if(boloU==1){
+                    return 3;
+                }
                 //printf("Prepinac -l\n");
                 UpperToLower(line);
                 break;
@@ -230,10 +243,13 @@ int main(int argc, char * argv[]) {
                 }
 
         }
+
     }
+
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-            printf("Non-option CMD argument: %s\n",argv[i]);
+
+            findSubString(line,argv[i], optarg );
         }
 
     }
