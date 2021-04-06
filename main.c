@@ -173,67 +173,78 @@ void findSubString(char line[],char substring[])
 int main(int argc, char * argv[]) {
 
     int opt;
-    char* optstring = ":aculr:";
+    char* optstring = "aculr:";
     char *rvalue = NULL;
 
     char *line = NULL;
     char newLine[10000];
+    int parametre[8];
+    char string[100];
+    int str =0;
+    int param=0;
 
     int boloU=0;
     int boloL=0;
 
-    line = readline();
-    int p = 0;
-    if(line[p]=='\n'){
-        printf("Zadal iba novy riadok");
-        return 0;
-    }
 
     while ((opt = getopt(argc, argv, optstring)) != -1) {
 
         switch (opt) {
             case 'a':
+                parametre[param]=1;
+                param++;
                 //printf("Prepinac -a\n");
-                RemoveNonLetters(line);
+                //RemoveNonLetters(line);
                 break;
             case 'r':
-                //printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
+                parametre[param]=5;
+                param++;
+                rvalue = optarg;
 
+                //printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
+/*
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
                         findSubStringMutli(line,argv[i], rvalue );
                     }
 
-                }
+                }*/
                 break;
             case 'c':
+                parametre[param]=2;
+                param++;
                 //printf("Prepinac -c\n");
 
-                CompresionText(line, newLine);
+                //CompresionText(line, newLine);
                 break;
             case 'u':
+
                 boloU=1;
                 if(boloL==1){
                     return 3;
                 }
+                parametre[param]=3;
+                param++;
                 //printf("Prepinac -u\n");
-                LowerToUpper(line);
+                //LowerToUpper(line);
                 break;
             case 'l':
                 boloL=1;
                 if(boloU==1){
                     return 3;
                 }
+                parametre[param]=4;
+                param++;
                 //printf("Prepinac -l\n");
-                UpperToLower(line);
+                //UpperToLower(line);
                 break;
 
             case '?':
                 if(optopt=='r'){
-                    printf("Prepinac -r vyzaduje povinny parameter\n");
+                    //printf("Prepinac -r vyzaduje povinny parameter\n");
                     return 2;
                 }else if(isprint(optopt)){
-                    printf("Neplatny prepinac -%c", optopt);
+                    //printf("Neplatny prepinac -%c", optopt);
                     return 1;
                 }
 
@@ -243,33 +254,68 @@ int main(int argc, char * argv[]) {
 
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-            //findSubString(line,argv[i]);
+            //printf("%s ", argv[i]);
+            //string[str]=argv[i];
+            strcpy(string[str], argv[i]);
+            str++;
+
         }
 
     }
+    str = strlen(string);
+    for(int i=0;i<str;i++){
+        printf("%s\n", string[str]);
+    }
+
+    line = readline();
+    int p = 0;
+    if(line[p]=='\n'){
+        //printf("Zadal iba novy riadok");
+        free(line);
+        return 0;
+    }
+    int i=0;
+    while(i<param){
+        switch (parametre[i]) {
+            case 1:
+                RemoveNonLetters(line);
+                i++;
+                break;
+            case 2:
+                CompresionText(line, newLine);
+                i++;
+                break;
+            case 3:
+                LowerToUpper(line);
+                i++;
+                break;
+            case 4:
+                UpperToLower(line);
+                i++;
+                break;
+            case 5:
+                if(optind < argc){
+                    for(int i=optind;i<argc;i++){
+                        findSubStringMutli(line,argv[i], rvalue );
+                    }
+                }
+                i++;
+                break;
+            default:
+                for(int i=0;i<str;i++){
+                        findSubString(line, string[i]);
+                    }
+
+                i++;
+                break;
+        }
+    }
+
+
+
 
     printf("%s", line);
     free(line);
-/*
-    char *line = NULL;
-
-
-    // Nacitavaci cyklus bezi pokial nedojde
-    // ku chybe alebo natrafeniu na EOF.
-    // Pozn. Na ukoncenie citania riadkov si viete
-    // napisat aj vlastnu podmienku.
-    while ((line = readline()) != NULL ) {
-        // Pozn. vrateny retazec 'line'
-        // je ukonceny znakom '\n'.
-
-        //printf("%s",line); // vypis retazca
-        if((line = readline())=='\n'){
-            printf("%s",line);
-            break;
-        }
-        free(line); // uvolnenie pamate
-    }
-*/
 
     return 0;
 }
