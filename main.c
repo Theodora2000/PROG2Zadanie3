@@ -113,9 +113,43 @@ void UpperToLower(char *line){
 
 }
 
-//void findSubStringMutli(char line[],char substring[], )
+void findSubStringMutli(char line[],char substring[], char* param){
 
-void findSubString(char line[],char substring[], char* param)
+
+    while(1>0)
+    {
+        char* start=strstr(line,substring);
+        int position = start-line;
+        printf("%d\n", position);
+        if(start==NULL)
+        {
+            return;
+        }
+
+        int i=0;
+        int size=strlen(substring);
+        int size_line = strlen(line);
+        int size_param =  strlen(param);
+        int diff = size_param-size;
+        if(size<size_param){
+
+            line = (char *)realloc(line, strlen(line)+(diff-1));
+        }
+
+        for(int i=size_line-1;i>=position;i--){
+            line[i+(diff-1)] = line[i];
+        }
+
+        while(i<size_param)
+        {
+            start[i]=substring[i];
+            i++;
+
+        }
+    }
+}
+
+void findSubString(char line[],char substring[])
 {
 
     while(1>0)
@@ -136,49 +170,10 @@ void findSubString(char line[],char substring[], char* param)
     }
 }
 
-/*
-void ParamR(char *line, char *rvalue, int optind, int argc, char * argv){
-    if(optind < argc){
-        for(int i=optind;i<argc;i++){
-            while(line[i]!=0){
-                if(line[i]==argv[i]){
-                    line[i]=rvalue;
-                    i++;
-                }
-                else{
-                    i++;
-                    continue;
-                }
-            }
-
-        }
-    }
-
-}
-
-void NonR(char *line,int optind, int argc, char * argv){
-    if(optind < argc){
-        for(int i=optind;i<argc;i++){
-            while(line[i]!=0){
-                if(line[i]==argv[i]){
-                    line[i]='*';
-                    i++;
-                }
-                else{
-                    i++;
-                    continue;
-                }
-            }
-
-        }
-    }
-
-}
-*/
 int main(int argc, char * argv[]) {
 
     int opt;
-    char* optstring = "aculr:";
+    char* optstring = ":aculr:";
     char *rvalue = NULL;
 
     char *line = NULL;
@@ -186,8 +181,6 @@ int main(int argc, char * argv[]) {
 
     int boloU=0;
     int boloL=0;
-
-
 
     line = readline();
     int p = 0;
@@ -204,11 +197,11 @@ int main(int argc, char * argv[]) {
                 RemoveNonLetters(line);
                 break;
             case 'r':
-                optarg=rvalue;
                 //printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
+
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        findSubString(line,argv[i], optarg );
+                        findSubStringMutli(line,argv[i], rvalue );
                     }
 
                 }
@@ -250,7 +243,7 @@ int main(int argc, char * argv[]) {
 
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-            //findSubString(line,argv[i], optarg );
+            //findSubString(line,argv[i]);
         }
 
     }
