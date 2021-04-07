@@ -115,33 +115,56 @@ void findSubStringMutli(char line[],char substring[], char* param){
 
     while(1>0)
     {
-        char* start=strstr(line,substring);
-        int position = start-line;
-        printf("%d\n", position);
+        char* start=strstr(line,param);//pocetka
         if(start==NULL)
         {
             return;
         }
+        int position = start-line;
+        int positionStart=start-line;
+        position=position+strlen(param);
+
 
         int i=0;
-        int size=strlen(substring);
-        int size_line = strlen(line);
-        int size_param =  strlen(param);
-        int diff = size_param-size;
-        if(size<size_param){
+        int size=strlen(substring);//velina string koji se menja umesto non-option
+        int size_line = strlen(line);//velicina linije
+        int size_param =  strlen(param);//velicina non-option
+        int diff = 0;
+        if(size_param>size){
+            diff = size_param-size;
+            //smanji memoriju
+            int j=0;
+            while(j<size)
+            {
+                start[j]=substring[j];
+                j++;
+            }
+            for(j=position; j<size_line; j++)
+            {
+                line[j-diff]=line[j];
+            }
+            line = (char *)realloc(line, strlen(line)-diff);
+            line[size_line-diff]='\0';
 
-            line = (char *)realloc(line, strlen(line)+(diff-1));
-        }
 
-        for(int i=size_line-1;i>=position;i--){
-            line[i+(diff-1)] = line[i];
-        }
 
-        while(i<size_param)
-        {
-            start[i]=substring[i];
-            i++;
 
+        }else{
+            diff = size-size_param;
+            line = (char *)realloc(line, strlen(line)+diff);
+            line[size_line+diff]='\0';
+            for(int i=size_line-1;i>=position;i--){
+                line[i+(diff)] = line[i];
+            }
+            int i=0;
+            int posEnd=strlen(substring);
+            while(i<posEnd)
+            {
+                start[i]=substring[i];
+                i++;
+
+            }
+            //povecaj memoriju
         }
     }
 }
@@ -176,12 +199,11 @@ int main(int argc, char * argv[]) {
     char *line = NULL;
     char newLine[10000];
     int parametre[8];
-    char string[100];
-    int str =0;
     int param=0;
 
     int boloU=0;
     int boloL=0;
+    int boloR=0;
 
 
     while ((opt = getopt(argc, argv, optstring)) != -1) {
@@ -195,6 +217,7 @@ int main(int argc, char * argv[]) {
                 parametre[param]=5;
                 param++;
                 rvalue = optarg;
+                boloR=1;
                 break;
             case 'c':
                 parametre[param]=2;
@@ -231,14 +254,29 @@ int main(int argc, char * argv[]) {
 
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-            parametre[param]=6;
-            param++;
-            break;
+            if(boloR){
+                break;
+            }else {
+                parametre[param] = 6;
+                param++;
+                break;
+            }
         }
 
     }
-
-
+/*
+for(int i=0;i<param;i++){
+    printf("%d\n", parametre[i]);
+}*/
+    for (int i = 0; i < param; i++) {
+        for (int j = i+1; j < param; j++) {
+            if(parametre[i] > parametre[j]) {
+                int temp = parametre[i];
+                parametre[i] = parametre[j];
+                parametre[j] = temp;
+            }
+        }
+    }
     line = readline();
     int p = 0;
     if(line[p]=='\n'){
@@ -268,7 +306,7 @@ int main(int argc, char * argv[]) {
 
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        findSubStringMutli(line,argv[i], rvalue );
+                        findSubStringMutli(line, rvalue,argv[i]);
                     }
                 }
                 i++;
@@ -276,8 +314,6 @@ int main(int argc, char * argv[]) {
             case 6:
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        //printf("%s ", argv[i]);
-                        //string[str]=argv[i];
                         findSubString(line, argv[i]);
 
                     }
