@@ -130,7 +130,10 @@ void findSubStringMutli(char line[],char substring[], char* param){
         int size_line = strlen(line);//velicina linije
         int size_param =  strlen(param);//velicina non-option
         int diff = 0;
-        if(size_param>size){
+        if(strcmp(param, substring)==0){
+            return;
+        }
+        if(size_param>=size){
             diff = size_param-size;
             //smanji memoriju
             int j=0;
