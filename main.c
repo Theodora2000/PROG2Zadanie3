@@ -32,9 +32,6 @@ char *readline() {
     return line;
 }
 
-//0             48      57          65          91          97          123
-//'\0'          '0'     '9'         'A'         'Z'         'a'          'z'
-
 void RemoveNonLetters(char* line)
 {
     int i=0;
@@ -193,29 +190,15 @@ int main(int argc, char * argv[]) {
             case 'a':
                 parametre[param]=1;
                 param++;
-                //printf("Prepinac -a\n");
-                //RemoveNonLetters(line);
                 break;
             case 'r':
                 parametre[param]=5;
                 param++;
                 rvalue = optarg;
-
-                //printf("Prepinac -r a jeho povinny parameter %s\n",rvalue);
-/*
-                if(optind < argc){
-                    for(int i=optind;i<argc;i++){
-                        findSubStringMutli(line,argv[i], rvalue );
-                    }
-
-                }*/
                 break;
             case 'c':
                 parametre[param]=2;
                 param++;
-                //printf("Prepinac -c\n");
-
-                //CompresionText(line, newLine);
                 break;
             case 'u':
 
@@ -225,8 +208,6 @@ int main(int argc, char * argv[]) {
                 }
                 parametre[param]=3;
                 param++;
-                //printf("Prepinac -u\n");
-                //LowerToUpper(line);
                 break;
             case 'l':
                 boloL=1;
@@ -235,16 +216,12 @@ int main(int argc, char * argv[]) {
                 }
                 parametre[param]=4;
                 param++;
-                //printf("Prepinac -l\n");
-                //UpperToLower(line);
                 break;
 
             case '?':
                 if(optopt=='r'){
-                    //printf("Prepinac -r vyzaduje povinny parameter\n");
                     return 2;
                 }else if(isprint(optopt)){
-                    //printf("Neplatny prepinac -%c", optopt);
                     return 1;
                 }
 
@@ -254,23 +231,17 @@ int main(int argc, char * argv[]) {
 
     if(optind < argc){
         for(int i=optind;i<argc;i++){
-            //printf("%s ", argv[i]);
-            //string[str]=argv[i];
-            strcpy(string[str], argv[i]);
-            str++;
-
+            parametre[param]=6;
+            param++;
+            break;
         }
 
     }
-    str = strlen(string);
-    for(int i=0;i<str;i++){
-        printf("%s\n", string[str]);
-    }
+
 
     line = readline();
     int p = 0;
     if(line[p]=='\n'){
-        //printf("Zadal iba novy riadok");
         free(line);
         return 0;
     }
@@ -294,6 +265,7 @@ int main(int argc, char * argv[]) {
                 i++;
                 break;
             case 5:
+
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
                         findSubStringMutli(line,argv[i], rvalue );
@@ -301,18 +273,21 @@ int main(int argc, char * argv[]) {
                 }
                 i++;
                 break;
-            default:
-                for(int i=0;i<str;i++){
-                        findSubString(line, string[i]);
+            case 6:
+                if(optind < argc){
+                    for(int i=optind;i<argc;i++){
+                        //printf("%s ", argv[i]);
+                        //string[str]=argv[i];
+                        findSubString(line, argv[i]);
+
                     }
+
+                }
 
                 i++;
                 break;
         }
     }
-
-
-
 
     printf("%s", line);
     free(line);
