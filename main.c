@@ -196,7 +196,7 @@ void findSubString(char line[],char substring[])
 int main(int argc, char * argv[]) {
 
     int opt;
-    char* optstring = "aculr:";
+    char* optstring = ":aculr:";
     char *rvalue = NULL;
 
     char *line = NULL;
@@ -243,11 +243,11 @@ int main(int argc, char * argv[]) {
                 parametre[param]=4;
                 param++;
                 break;
+            case ':':
+                return 2;
 
             case '?':
-                if(optopt=='r'){
-                    return 2;
-                }else if(isprint(optopt)){
+                if(isprint(optopt)){
                     return 1;
                 }
 
