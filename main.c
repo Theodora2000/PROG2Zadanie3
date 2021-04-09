@@ -116,7 +116,7 @@ void findSubStringMutli(char line[],char substring[], char* param){
     lastPos=line;
     while(1>0)
     {
-        //printf("%s\n",line);
+       // printf("%s\n",line);
         char* start=strstr(lastPos,param);//pocetka
         char* go=start;
         int duzina=start-line;
@@ -296,23 +296,22 @@ for(int i=0;i<param;i++){
     }
     int ind=0;
     char** allLines=(char**)malloc(sizeof(char*));
-    line = readline();
-    if(line[0]=='\n')
+    allLines[0] = readline();
+    ind++;
+    if(allLines[0][0]=='\n')
     {
         return 0;
 
     }
-    allLines[ind]=line;
-    ind++;
     while(1>0)
     {
-        line = readline();
-        if(line[0]=='\n')
+        allLines=(char**)realloc(allLines,(ind+1)*sizeof(char*));
+        allLines[ind] = readline();
+        if(allLines[ind][0]=='\n')
         {
+            free(allLines[ind]);
             break;
         }
-        allLines=realloc(allLines,(ind+1)*sizeof(char*));
-        allLines[ind]=line;
         ind++;
     }
 
@@ -348,9 +347,17 @@ for(int i=0;i<param;i++){
 
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        for(int j=0; j<ind; j++) {
+
+                        for(int j=0; j<ind; j++)
+                        {
+
                             findSubStringMutli(allLines[j], rvalue, argv[i]);
+                            //printf("%s\n",allLines[j]);
                         }
+
+                        //printf("%s\n",allLines[0]);
+                        //findSubStringMutli(allLines[j], rvalue, argv[i]);
+
                     }
                 }
                 i++;
@@ -370,15 +377,29 @@ for(int i=0;i<param;i++){
         }
     }
 
+
     for(int i=0; i<ind; i++)
     {
-        printf("%s",allLines[i]);
+        char* check=strstr(allLines[i],"\n");
+        if(check==NULL)
+        {
+            printf("%s\n",allLines[i]);
+        }
+        else
+            {
+                printf("%s",allLines[i]);
+            }
     }
-    for(int i=0; i<ind; i++)
+
+   // printf("%s\n",line);
+
+    for(int i=0; i<ind-1; i++)
     {
         free(allLines[i]);
     }
-    free(line);
+
+
+    free(allLines);
 
     return 0;
 }
