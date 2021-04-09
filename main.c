@@ -112,18 +112,32 @@ void UpperToLower(char *line){
 
 void findSubStringMutli(char line[],char substring[], char* param){
 
-
+    char* lastPos;
+    lastPos=line;
     while(1>0)
     {
-        char* start=strstr(line,param);//pocetka
+        //printf("%s\n",line);
+        char* start=strstr(lastPos,param);//pocetka
+        char* go=start;
+        int duzina=start-line;
+        int brojac=0;
         if(start==NULL)
+        {
+            return;
+        }
+        lastPos=line+duzina+strlen(substring)-1;
+       //lastPos=start+strlen(param)-1;
+        if(*lastPos==*substring)
+        {
+            lastPos++;
+        }
+        if(lastPos==NULL)
         {
             return;
         }
         int position = start-line;
         int positionStart=start-line;
         position=position+strlen(param);
-
 
         int i=0;
         int size=strlen(substring);//velina string koji se menja umesto non-option
@@ -280,36 +294,63 @@ for(int i=0;i<param;i++){
             }
         }
     }
+    int ind=0;
+    char** allLines=(char**)malloc(sizeof(char*));
     line = readline();
-    int p = 0;
-    if(line[p]=='\n'){
-        free(line);
+    if(line[0]=='\n')
+    {
         return 0;
+
     }
+    allLines[ind]=line;
+    ind++;
+    while(1>0)
+    {
+        line = readline();
+        if(line[0]=='\n')
+        {
+            break;
+        }
+        allLines=realloc(allLines,(ind+1)*sizeof(char*));
+        allLines[ind]=line;
+        ind++;
+    }
+
     int i=0;
     while(i<param){
         switch (parametre[i]) {
             case 1:
-                RemoveNonLetters(line);
+                for(int i=0; i<ind; i++)
+                {
+                    RemoveNonLetters(allLines[i]);
+                }
                 i++;
                 break;
             case 2:
-                CompresionText(line, newLine);
+                for(int i=0; i<ind; i++) {
+                    CompresionText(allLines[i], newLine);
+                }
                 i++;
                 break;
             case 3:
-                LowerToUpper(line);
+                for(int i=0; i<ind; i++) {
+                    LowerToUpper(allLines[i]);
+                }
                 i++;
                 break;
             case 4:
-                UpperToLower(line);
+                for(int i=0; i<ind; i++) {
+                    UpperToLower(allLines[i]);
+                }
                 i++;
                 break;
             case 5:
 
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        findSubStringMutli(line, rvalue,argv[i]);
+                        for(int j=0; j<ind; j++) {
+                            findSubStringMutli(allLines[j], rvalue, argv[i]);
+                        }
                     }
                 }
                 i++;
@@ -317,8 +358,9 @@ for(int i=0;i<param;i++){
             case 6:
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
-                        findSubString(line, argv[i]);
-
+                        for(int j=0; j<ind; j++) {
+                            findSubString(allLines[j], argv[i]);
+                        }
                     }
 
                 }
@@ -328,7 +370,14 @@ for(int i=0;i<param;i++){
         }
     }
 
-    printf("%s", line);
+    for(int i=0; i<ind; i++)
+    {
+        printf("%s",allLines[i]);
+    }
+    for(int i=0; i<ind; i++)
+    {
+        free(allLines[i]);
+    }
     free(line);
 
     return 0;
