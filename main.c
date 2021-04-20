@@ -37,6 +37,11 @@ void RemoveNonLetters(char* line)
     int i=0;
     while(line[i]!=0)
     {
+        if(line[i]=='\n')
+        {
+            i++;
+            continue;
+        }
         if(!isalpha(line[i]))
         {
             line[i]=' ';
@@ -110,27 +115,33 @@ void UpperToLower(char *line){
 
 }
 
-void findSubStringMutli(char line[],char substring[], char* param){
+void findSubStringMutli(char** pokLine,char substring[], char* param){
+
 
     char* lastPos;
-    lastPos=line;
+    lastPos=*pokLine;
+    int a=0;
     while(1>0)
     {
-       // printf("%s\n",line);
-        char* start=strstr(lastPos,param);//pocetka
-        char* go=start;
-        int duzina=start-line;
-        int brojac=0;
+
+        char* line=*pokLine;
+        char* start=strstr(lastPos,param);
         if(start==NULL)
         {
             return;
         }
-        lastPos=line+duzina+strlen(substring)-1;
-       //lastPos=start+strlen(param)-1;
+        char*end = start + strlen(substring);//KRAJ SUBSTRINGA
+        int jump = end-line;//OD POCETKA DO SUBSTRINGA
+        int duzina=start-line;
+        int brojac=0;
+
+
+
         if(*lastPos==*substring)
         {
             lastPos++;
         }
+
         if(lastPos==NULL)
         {
             return;
@@ -140,16 +151,16 @@ void findSubStringMutli(char line[],char substring[], char* param){
         position=position+strlen(param);
 
         int i=0;
-        int size=strlen(substring);//velina string koji se menja umesto non-option
-        int size_line = strlen(line);//velicina linije
-        int size_param =  strlen(param);//velicina non-option
+        int size=strlen(substring);
+        int size_line = strlen(line);
+        int size_param =  strlen(param);
         int diff = 0;
         if(strcmp(param, substring)==0){
             return;
         }
         if(size_param>=size){
+
             diff = size_param-size;
-            //smanji memoriju
             int j=0;
             while(j<size)
             {
@@ -160,38 +171,52 @@ void findSubStringMutli(char line[],char substring[], char* param){
             {
                 line[j-diff]=line[j];
             }
-            line = (char *)realloc(line, strlen(line)-diff);
+            *pokLine = (char *)realloc(*pokLine, strlen(line)-diff+1);
+           line=*pokLine;
             line[size_line-diff]='\0';
 
 
-
+//PROBLEM JE BIO STO SMOM POKAZIVACE SLALI PO VREDNOSTI A KADA POSALJEMO PO VRDENOSTI ONDA NE MOGU DA JE ,MENJAM, TREBA PO ADRESI
 
         }else{
             diff = size-size_param;
-            line = (char *)realloc(line, strlen(line)+diff);
-            line[size_line+diff]='\0';
+            *pokLine = (char *)realloc(*pokLine, size_line+diff+1);
+            line=*pokLine;
+           line[size_line+diff]='\0';
+
             for(int i=size_line-1;i>=position;i--){
                 line[i+(diff)] = line[i];
             }
+
             int i=0;
             int posEnd=strlen(substring);
+
+
             while(i<posEnd)
             {
-                start[i]=substring[i];
+                line[i+duzina]=substring[i];
                 i++;
 
             }
-            //povecaj memoriju
+
         }
+        lastPos=line+jump;
     }
 }
 
-void findSubString(char line[],char substring[])
+void findSubString(char** pokLine,char substring[])
 {
-
+    char* line;
+    char* start;
+    char* lastPos;
+    line=*pokLine;
+    lastPos=line;
     while(1>0)
     {
-        char* start=strstr(line,substring);
+
+
+        char* start=strstr(lastPos,substring);
+        int duzina=strlen(substring);
         if(start==NULL)
         {
             return;
@@ -204,10 +229,12 @@ void findSubString(char line[],char substring[])
             i++;
 
         }
+        lastPos=lastPos+duzina;
     }
 }
 
 int main(int argc, char * argv[]) {
+
 
     int opt;
     char* optstring = ":aculr:";
@@ -264,9 +291,7 @@ int main(int argc, char * argv[]) {
                 if(isprint(optopt)){
                     return 1;
                 }
-
         }
-
     }
 
     if(optind < argc){
@@ -281,10 +306,7 @@ int main(int argc, char * argv[]) {
         }
 
     }
-/*
-for(int i=0;i<param;i++){
-    printf("%d\n", parametre[i]);
-}*/
+
     for (int i = 0; i < param; i++) {
         for (int j = i+1; j < param; j++) {
             if(parametre[i] > parametre[j]) {
@@ -295,6 +317,7 @@ for(int i=0;i<param;i++){
         }
     }
     int ind=0;
+
     char** allLines=(char**)malloc(sizeof(char*));
     allLines[0] = readline();
     ind++;
@@ -307,13 +330,17 @@ for(int i=0;i<param;i++){
     {
         allLines=(char**)realloc(allLines,(ind+1)*sizeof(char*));
         allLines[ind] = readline();
+
         if(allLines[ind][0]=='\n')
         {
             free(allLines[ind]);
+            allLines=(char**)realloc(allLines,(ind)*sizeof(char*));
             break;
         }
         ind++;
     }
+
+
 
     int i=0;
     while(i<param){
@@ -351,13 +378,8 @@ for(int i=0;i<param;i++){
                         for(int j=0; j<ind; j++)
                         {
 
-                            findSubStringMutli(allLines[j], rvalue, argv[i]);
-                            //printf("%s\n",allLines[j]);
+                            findSubStringMutli(&allLines[j], rvalue, argv[i]);
                         }
-
-                        //printf("%s\n",allLines[0]);
-                        //findSubStringMutli(allLines[j], rvalue, argv[i]);
-
                     }
                 }
                 i++;
@@ -366,7 +388,7 @@ for(int i=0;i<param;i++){
                 if(optind < argc){
                     for(int i=optind;i<argc;i++){
                         for(int j=0; j<ind; j++) {
-                            findSubString(allLines[j], argv[i]);
+                            findSubString(&allLines[j], argv[i]);
                         }
                     }
 
@@ -391,13 +413,11 @@ for(int i=0;i<param;i++){
             }
     }
 
-   // printf("%s\n",line);
 
     for(int i=0; i<ind-1; i++)
     {
         free(allLines[i]);
     }
-
 
     free(allLines);
 

@@ -1,3 +1,3 @@
 "C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\PROG2Zadanie3.dir/objects.a
 C:\Compailer\mingw64\bin\ar.exe cr CMakeFiles\PROG2Zadanie3.dir/objects.a @CMakeFiles\PROG2Zadanie3.dir\objects1.rsp
-C:\Compailer\mingw64\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\PROG2Zadanie3.dir/objects.a -Wl,--no-whole-archive  -o PROG2Zadanie3.exe -Wl,--out-implib,libPROG2Zadanie3.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\PROG2Zadanie3.dir\linklibs.rsp
+C:\Compailer\mingw64\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\PROG2Zadanie3.dir/objects.a -Wl,--no-whole-archive -o PROG2Zadanie3.exe -Wl,--out-implib,libPROG2Zadanie3.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\PROG2Zadanie3.dir\linklibs.rsp
